@@ -5,10 +5,27 @@ import { GoogleStrategy } from "./strategy/google.strategy";
 import { SessionSerializer } from "src/utils/SessionSerializer";
 import { LocalStrategy } from "./strategy/local.strategy";
 import { LoggerMiddleware } from "src/utils/middlewares/LoggerMiddleware";
+import { UserService } from "src/user/user.service";
+import { MongooseModule } from "@nestjs/mongoose";
+import { User, UserSchema } from "src/user/schemas/user.schema";
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, SessionSerializer, LocalStrategy],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    SessionSerializer,
+    LocalStrategy,
+    UserService,
+  ],
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: User.name,
+        schema: UserSchema,
+      },
+    ]),
+  ],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

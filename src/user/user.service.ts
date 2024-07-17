@@ -40,8 +40,8 @@ export class UserService {
     return this.userModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.userModel.findById(id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -51,14 +51,21 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
-  /**
-   * validateUser
-   */
-  public validateUser({ email }: ValidateUserDto) {
+
+  public async validateUser(userInfo: ValidateUserDto | CreateUserDto) {
     try {
-      return this.userModel.findOne({ email: email });
+      const userExists = await this.userModel.findOne({
+        email: userInfo.email,
+      });
+
+      if (userExists) return userExists;
+      const newUser = this.userModel.create(userInfo);
+      return newUser;
     } catch (error) {
       throw error;
     }
+  }
+  async findOneByEmail(email: string) {
+    return this.userModel.findOne({ email: email });
   }
 }

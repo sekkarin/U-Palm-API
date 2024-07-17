@@ -45,6 +45,10 @@ export class User {
     select: false,
   })
   password?: string;
+  @Prop({
+    type: String,
+  })
+  photo?: string;
 
   @Prop({
     default: Roles.USER,

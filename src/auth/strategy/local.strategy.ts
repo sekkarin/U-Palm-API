@@ -1,25 +1,26 @@
-import { Strategy } from "passport-local";
-import { PassportStrategy } from "@nestjs/passport";
 import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from "@nestjs/passport";
+import { Strategy } from "passport-local";
+import { Request } from "express";
+
+import { UserService } from "src/user/user.service";
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor() {
-    super({ usernameField: "email" });
+  constructor(private readonly userService: UserService) {
+    super({ usernameField: "email", passReqToCallback: true });
   }
 
-  async validate(email: string, password: string): Promise<any> {
-    console.log(email, password);
-    const user = {
-      email: email,
-      password,
-      cat: "foo",
-    };
+  async validate(req: Request, email: string, password: string): Promise<any> {
+    const { firstName, lastName } = req.body;
 
-    // const user = await this.authService.validateUser(username, password);
-    // if (!user) {
-    //   throw new UnauthorizedException();
-    // }
-    return user;
+    const userExists = await this.userService.validateUser({
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+    });
+
+    return userExists || null;
   }
 }

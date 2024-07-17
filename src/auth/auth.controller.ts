@@ -20,7 +20,6 @@ export class AuthController {
   }
 
   @Get("logout")
-  // @UseGuards(AuthGuard)
   async logout(@Request() req) {
     req.session.destroy((err: any) => {
       console.log(err);
@@ -33,7 +32,7 @@ export class AuthController {
   googleAuthRedirect(@Request() req) {
     return this.authService.googleLogin(req);
   }
-  @Post("/local/login")
+  @Post("/login")
   @UseGuards(LocalAuthGuard)
   async localLogin(@Request() req) {
     return { user: req.user, data: "hello world" };
