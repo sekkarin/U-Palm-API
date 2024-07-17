@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { Model } from "mongoose";
@@ -12,10 +17,10 @@ export class UserService {
   private salt = 10;
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async createUserLocal(createUserDto: CreateUserDto) {
     try {
       let passwordHash: string | undefined;
-      const userExists = await this.userModel.find({
+      const userExists = await this.userModel.findOne({
         email: createUserDto.email,
       });
 
@@ -29,6 +34,30 @@ export class UserService {
       const user = await this.userModel.create({
         ...createUserDto,
         password: passwordHash,
+      });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async createUserGoogle(createUserDto: CreateUserDto) {
+    try {
+      let passwordHash: string | undefined;
+      const userExists = await this.userModel.findOne({
+        email: createUserDto.email,
+      });
+
+      if (userExists) {
+        throw new ConflictException("Email already exists");
+      }
+
+      if (createUserDto.password) {
+        passwordHash = await bcrypt.hash(createUserDto.password, this.salt);
+      }
+      const user = await this.userModel.create({
+        ...createUserDto,
+        password: passwordHash,
+        isVerifiedAccount: true,
       });
       return user;
     } catch (error) {
@@ -52,15 +81,28 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  public async validateUser(userInfo: ValidateUserDto | CreateUserDto) {
+  public async validateUser(
+    userInfo: ValidateUserDto | CreateUserDto,
+    strategyType: "local" | "google",
+  ) {
     try {
-      const userExists = await this.userModel.findOne({
-        email: userInfo.email,
-      });
+      const userExists = await this.userModel
+        .findOne({
+          email: userInfo.email,
+        })
+        .select("+password");
 
+      if (!userExists?.password && userExists) {
+        throw new UnauthorizedException("Please reset your password");
+      }
       if (userExists) return userExists;
-      const newUser = this.userModel.create(userInfo);
-      return newUser;
+      if (strategyType == "google") {
+        return this.createUserGoogle(userInfo as CreateUserDto);
+      } else if (strategyType == "local") {
+        return this.createUserLocal(userInfo as CreateUserDto);
+      } else {
+        throw new UnauthorizedException("Invalid strategy type");
+      }
     } catch (error) {
       throw error;
     }

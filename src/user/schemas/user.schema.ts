@@ -59,6 +59,12 @@ export class User {
   contracts?: AddressContract[];
 
   typeUsers?: BodyDocs[];
+
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isVerifiedAccount: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

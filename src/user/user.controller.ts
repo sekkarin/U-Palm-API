@@ -18,7 +18,7 @@ export class UserController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     try {
-      return this.userService.create(createUserDto);
+      return this.userService.createUserLocal(createUserDto);
     } catch (error) {
       throw error;
     }
