@@ -6,20 +6,22 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { GoogleOAuthGuard } from "src/auth/guards/google-oauth.guard";
 
-@Controller("user")
+@Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    try {
+      return this.userService.create(createUserDto);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get()
