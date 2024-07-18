@@ -131,4 +131,5 @@ export class UserService {
     return this.userModel.findOne({ email: email });
   }
   // TODO: update role
+  // TODO: authorization  with casl
 }
