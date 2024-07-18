@@ -6,12 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { AuthenticatedGuard } from "src/auth/guards/auth.guard";
+import { Roles } from "src/decorators/roles.decorator";
+import { Role } from "src/enums/roles.enum";
+import { RolesGuard } from "src/guards/roles.guard";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller("users")
+@Roles(Role.ADMIN, Role.USER)
+@UseGuards(AuthenticatedGuard, RolesGuard)
+@ApiTags("Users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -25,7 +34,6 @@ export class UserController {
   }
 
   @Get()
-  // @UseGuards(GoogleOAuthGuard)
   findAll() {
     return this.userService.findAll();
   }

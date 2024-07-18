@@ -33,6 +33,7 @@ export class UserService {
       const user = await this.userModel.create({
         ...createUserDto,
         password: passwordHash,
+        isVerifiedAccount: true,
       });
       return user;
     } catch (error) {
@@ -73,7 +74,7 @@ export class UserService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return `This action updates a #${id} user` + updateUserDto;
   }
 
   remove(id: number) {
@@ -129,4 +130,5 @@ export class UserService {
   async findOneByEmail(email: string) {
     return this.userModel.findOne({ email: email });
   }
+  // TODO: update role
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
-import { Roles } from "src/enums/roles";
+import { Role } from "src/enums/roles.enum";
 import { Address } from "./user-address.schema";
 import { AddressContract } from "./user-contract.schea";
 
@@ -51,9 +51,9 @@ export class User {
   photo?: string;
 
   @Prop({
-    default: Roles.USER,
+    default: Role.USER,
   })
-  roles: Roles[];
+  roles: Role[];
 
   addresses?: Address[];
   contracts?: AddressContract[];
@@ -72,6 +72,8 @@ UserSchema.set("toJSON", {
   transform(doc, ret) {
     delete ret["password"];
     delete ret["_id"];
+    delete ret["updatedAt"];
+    delete ret["__v"];
     ret["userId"] = doc._id;
     return ret;
   },
