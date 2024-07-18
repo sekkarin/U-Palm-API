@@ -26,15 +26,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   ): Promise<any> {
     const { name, emails, photos } = profile;
 
-    const userExists = await this.userService.validateUser(
-      {
-        email: emails[0].value,
-        firstName: name.givenName,
-        lastName: name.familyName,
-        photo: photos[0].value,
-      },
-      "google",
-    );
+    const userExists = await this.userService.validateUserGoogle({
+      email: emails[0].value,
+      firstName: name.givenName,
+      lastName: name.familyName,
+      photo: photos[0].value,
+    });
 
     return userExists || null;
   }

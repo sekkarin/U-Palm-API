@@ -19,6 +19,12 @@ import { PassportModule } from "@nestjs/passport";
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>("database.host"),
+        auth: {
+          username: configService.get<string>("database.username"),
+          password: configService.get<string>("database.password"),
+        },
+
+        dbName: configService.get<string>("database.databaseName"),
       }),
       inject: [ConfigService],
     }),

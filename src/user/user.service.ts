@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -81,10 +80,7 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  public async validateUser(
-    userInfo: ValidateUserDto | CreateUserDto,
-    strategyType: "local" | "google",
-  ) {
+  public async validateUserLocal(userInfo: ValidateUserDto | CreateUserDto) {
     try {
       const userExists = await this.userModel
         .findOne({
@@ -95,14 +91,37 @@ export class UserService {
       if (!userExists?.password && userExists) {
         throw new UnauthorizedException("Please reset your password");
       }
-      if (userExists) return userExists;
-      if (strategyType == "google") {
-        return this.createUserGoogle(userInfo as CreateUserDto);
-      } else if (strategyType == "local") {
-        return this.createUserLocal(userInfo as CreateUserDto);
-      } else {
-        throw new UnauthorizedException("Invalid strategy type");
+
+      if (!userExists?.isVerifiedAccount && userExists) {
+        throw new UnauthorizedException("Please verify your account.");
       }
+
+      if (userExists?.password) {
+        const passwordIsMatch = await bcrypt.compare(
+          userInfo.password,
+          userExists.password,
+        );
+        if (!passwordIsMatch) {
+          throw new UnauthorizedException("Password is not a valid.");
+        }
+      }
+
+      if (userExists) return userExists;
+      return this.createUserLocal(userInfo as CreateUserDto);
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async validateUserGoogle(userInfo: ValidateUserDto | CreateUserDto) {
+    try {
+      const userExists = await this.userModel
+        .findOne({
+          email: userInfo.email,
+        })
+        .select("+password");
+
+      if (userExists) return userExists;
+      return this.createUserGoogle(userInfo as CreateUserDto);
     } catch (error) {
       throw error;
     }

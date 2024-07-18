@@ -11,7 +11,9 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   async logout(@Request() req) {
     req.session.destroy((err: any) => {
-      console.log(err);
+      if (err) {
+        console.log(err);
+      }
     });
     return { message: "logout success" };
   }
