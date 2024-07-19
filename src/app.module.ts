@@ -8,6 +8,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
+import { SuppliersModule } from './suppliers/suppliers.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PassportModule } from "@nestjs/passport";
     PassportModule.register({
       session: true,
     }),
+    SuppliersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
