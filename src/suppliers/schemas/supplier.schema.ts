@@ -21,16 +21,18 @@ export class Supplier {
   })
   description?: string;
 
-  imageBanners: [
-    {
-      type: string;
-    },
-  ];
+  @Prop({
+    type: [String],
+  })
+  imageBanners: string[];
 
-  profileImage: {
-    type: string;
-    required: true;
-  };
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  profileImage: string;
 }
 
 export const SupplierSchema = SchemaFactory.createForClass(Supplier);

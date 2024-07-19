@@ -43,7 +43,7 @@ export class AuthController {
   }
   @Post("/local/login")
   @UseGuards(AuthGuard("localLogin"), LocalAuthGuard)
-  @ApiOperation({ summary: "Local authentication" })
+  @ApiOperation({ summary: "Local login" })
   @ApiBody({ type: ValidateUserDto })
   @ApiResponse({
     status: 200,
@@ -83,7 +83,7 @@ export class AuthController {
 
   @Post("/local/register")
   @UseGuards(AuthGuard("localRegister"))
-  @ApiOperation({ summary: "Local authentication" })
+  @ApiOperation({ summary: "Local register" })
   @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 200,

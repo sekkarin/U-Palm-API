@@ -1,11 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { CreateSupplierDto } from "./dto/create-supplier.dto";
 import { UpdateSupplierDto } from "./dto/update-supplier.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Supplier } from "./schemas/supplier.schema";
+import { Model } from "mongoose";
 
 @Injectable()
 export class SuppliersService {
+  constructor(
+    @InjectModel(Supplier.name) private supplierModel: Model<Supplier>,
+  ) {}
   create(createSupplierDto: CreateSupplierDto) {
-    return "This action adds a new supplier";
+    return this.supplierModel.create({
+      name: createSupplierDto.name,
+      description: createSupplierDto.description,
+      imageBanners: createSupplierDto.imageBanners,
+      profileImage: createSupplierDto.profileImage,
+    });
   }
 
   findAll() {
