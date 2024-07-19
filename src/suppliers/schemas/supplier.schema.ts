@@ -18,9 +18,8 @@ export class Supplier {
   @Prop({
     type: String,
     max: 256,
-    min: 1,
   })
-  description: string;
+  description?: string;
 
   imageBanners: [
     {

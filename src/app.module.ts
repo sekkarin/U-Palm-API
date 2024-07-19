@@ -8,7 +8,7 @@ import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
-import { SuppliersModule } from './suppliers/suppliers.module';
+import { SuppliersModule } from "./suppliers/suppliers.module";
 
 @Module({
   imports: [

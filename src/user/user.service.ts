@@ -19,6 +19,7 @@ export class UserService {
   async createUserLocal(createUserDto: CreateUserDto) {
     try {
       let passwordHash: string | undefined;
+
       const userExists = await this.userModel.findOne({
         email: createUserDto.email,
       });
@@ -81,7 +82,7 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  public async validateUserLocal(userInfo: ValidateUserDto | CreateUserDto) {
+  public async registerUserLocal(userInfo: CreateUserDto) {
     try {
       const userExists = await this.userModel
         .findOne({
@@ -89,30 +90,45 @@ export class UserService {
         })
         .select("+password");
 
-      if (!userExists?.password && userExists) {
-        throw new UnauthorizedException("Please reset your password");
-      }
-
       if (!userExists?.isVerifiedAccount && userExists) {
         throw new UnauthorizedException("Please verify your account.");
       }
 
-      if (userExists?.password) {
-        const passwordIsMatch = await bcrypt.compare(
-          userInfo.password,
-          userExists.password,
-        );
-        if (!passwordIsMatch) {
-          throw new UnauthorizedException("Password is not a valid.");
-        }
-      }
-
-      if (userExists) return userExists;
       return this.createUserLocal(userInfo as CreateUserDto);
     } catch (error) {
       throw error;
     }
   }
+  public async loginUserLocal(userInfo: ValidateUserDto) {
+    try {
+      const userExists = await this.userModel
+        .findOne({
+          email: userInfo.email,
+        })
+        .select("+password");
+
+      if (!userExists) {
+        throw new UnauthorizedException("User does not exist");
+      }
+
+      if (!userExists?.password) {
+        throw new UnauthorizedException("Please reset your password");
+      }
+      const passwordIsMatch = await bcrypt.compare(
+        userInfo.password,
+        userExists.password,
+      );
+
+      if (!passwordIsMatch) {
+        throw new UnauthorizedException("Password is not a valid.");
+      }
+
+      return userExists;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async validateUserGoogle(userInfo: ValidateUserDto | CreateUserDto) {
     try {
       const userExists = await this.userModel
@@ -127,6 +143,7 @@ export class UserService {
       throw error;
     }
   }
+
   async findOneByEmail(email: string) {
     return this.userModel.findOne({ email: email });
   }
