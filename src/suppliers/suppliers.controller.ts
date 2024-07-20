@@ -25,8 +25,6 @@ export class SuppliersController {
   })
   @ApiResponse({ status: 400, description: "Invalid input." })
   create(@Body() createSupplierDto: CreateSupplierDto) {
-    console.log(createSupplierDto);
-
     return this.suppliersService.create(createSupplierDto);
   }
 

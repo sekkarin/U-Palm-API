@@ -18,9 +18,10 @@ export class SuppliersService {
       profileImage: createSupplierDto.profileImage,
     });
   }
-
+  //TODO: Get all pagination
+  //TODO: search and filter
   findAll() {
-    return `This action returns all suppliers`;
+    return this.supplierModel.find();
   }
 
   findOne(id: number) {
