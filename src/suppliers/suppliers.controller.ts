@@ -13,6 +13,7 @@ import { CreateSupplierDto } from "./dto/create-supplier.dto";
 import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { SupplierPaginationQueryparamsDto } from "./dto/sup-pagination-query-params.dto";
+import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
 
 @Controller("suppliers")
 @ApiTags("Suppliers")
@@ -44,9 +45,11 @@ export class SuppliersController {
     }
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.suppliersService.findOne(+id);
+  @Get(":supplierId")
+  findOne(
+    @Param("supplierId", MongoDBObjectIdPipe) supplierId: MongoDBObjectIdPipe,
+  ) {
+    return this.suppliersService.findOne(supplierId);
   }
 
   @Patch(":id")

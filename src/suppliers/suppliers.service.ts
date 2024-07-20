@@ -6,6 +6,7 @@ import { Supplier } from "./schemas/supplier.schema";
 import { Model } from "mongoose";
 import { SupplierPaginationQueryparamsDto } from "./dto/sup-pagination-query-params.dto";
 import { PaginatedDto } from "src/utils/dto/paginated.dto";
+import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
 
 @Injectable()
 export class SuppliersService {
@@ -42,8 +43,13 @@ export class SuppliersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} supplier`;
+  async findOne(supplierId: MongoDBObjectIdPipe) {
+    try {
+      const supplier = await this.supplierModel.findOne({ _id: supplierId });
+      return supplier || [];
+    } catch (error) {
+      throw error;
+    }
   }
 
   update(id: number, updateSupplierDto: UpdateSupplierDto) {
