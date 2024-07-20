@@ -4,6 +4,8 @@ import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Supplier } from "./schemas/supplier.schema";
 import { Model } from "mongoose";
+import { SupplierPaginationQueryparamsDto } from "./dto/sup-pagination-query-params.dto";
+import { PaginatedDto } from "src/utils/dto/paginated.dto";
 
 @Injectable()
 export class SuppliersService {
@@ -18,10 +20,26 @@ export class SuppliersService {
       profileImage: createSupplierDto.profileImage,
     });
   }
-  //TODO: Get all pagination
-  //TODO: search and filter
-  findAll() {
-    return this.supplierModel.find();
+
+  async findAll({
+    page = 1,
+    limit = 1,
+    query = "",
+  }: SupplierPaginationQueryparamsDto) {
+    try {
+      const itemCount = await this.supplierModel.countDocuments();
+
+      const suppliers = await this.supplierModel
+        .find({
+          $or: [{ name: { $regex: query, $options: "i" } }],
+        })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      return new PaginatedDto<Supplier>(suppliers, page, limit, itemCount);
+    } catch (error) {
+      throw error;
+    }
   }
 
   findOne(id: number) {

@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from "@nestjs/common";
 import { SuppliersService } from "./suppliers.service";
 import { CreateSupplierDto } from "./dto/create-supplier.dto";
 import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { SupplierPaginationQueryparamsDto } from "./dto/sup-pagination-query-params.dto";
 
 @Controller("suppliers")
 @ApiTags("Suppliers")
@@ -29,8 +31,17 @@ export class SuppliersController {
   }
 
   @Get()
-  findAll() {
-    return this.suppliersService.findAll();
+  async findAll(
+    @Query() supplierPaginationQueryparamsDto: SupplierPaginationQueryparamsDto,
+  ) {
+    try {
+      const suppliers = await this.suppliersService.findAll(
+        supplierPaginationQueryparamsDto,
+      );
+      return suppliers;
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get(":id")
