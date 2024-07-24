@@ -9,6 +9,7 @@ import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SuppliersModule } from "./suppliers/suppliers.module";
       session: true,
     }),
     SuppliersModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
