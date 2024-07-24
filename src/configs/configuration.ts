@@ -13,4 +13,10 @@ export default () => ({
   auth: {
     sessionSecret: process.env.SESSION_SECRET || "SESSION_SECRET",
   },
+  s3: {
+    AWS_S3_BUCKET_NAME: process.env.AWS_S3_BUCKET_NAME,
+    AWS_S3_BUCKET_REGION: process.env.AWS_S3_BUCKET_REGION,
+    AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
+    AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
+  },
 });
