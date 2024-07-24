@@ -3,11 +3,12 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { GoogleStrategy } from "./strategy/google.strategy";
 import { SessionSerializer } from "src/utils/SessionSerializer";
-import { LocalStrategy } from "./strategy/local.strategy";
+import { LocalRegisterStrategy } from "./strategy/local-register.strategy";
 import { LoggerMiddleware } from "src/utils/middlewares/LoggerMiddleware";
 import { UserService } from "src/user/user.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "src/user/schemas/user.schema";
+import { LocalLoginStrategy } from "./strategy/local-login.strategy";
 
 @Module({
   controllers: [AuthController],
@@ -15,7 +16,8 @@ import { User, UserSchema } from "src/user/schemas/user.schema";
     AuthService,
     GoogleStrategy,
     SessionSerializer,
-    LocalStrategy,
+    LocalRegisterStrategy,
+    LocalLoginStrategy,
     UserService,
   ],
   imports: [
