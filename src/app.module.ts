@@ -13,6 +13,8 @@ import { ProductsModule } from "./products/products.module";
 import { ProductController } from "./products/products.controller";
 import { ProductItemController } from "./products/product-item.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
+import { VariationModule } from './variation/variation.module';
+import { ProductConfigurationModule } from './product-configuration/product-configuration.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { ProductCategoryModule } from "./product-category/product-category.modul
     SuppliersModule,
     ProductsModule,
     ProductCategoryModule,
+    VariationModule,
+    ProductConfigurationModule,
   ],
   controllers: [AppController, ProductController, ProductItemController],
   providers: [AppService],
