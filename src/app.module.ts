@@ -10,6 +10,8 @@ import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
 import { ProductsModule } from "./products/products.module";
+import { ProductController } from "./products/products.controller";
+import { ProductItemController } from "./products/product-item.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
 
 @Module({
@@ -40,7 +42,7 @@ import { ProductCategoryModule } from "./product-category/product-category.modul
     ProductsModule,
     ProductCategoryModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ProductController, ProductItemController],
   providers: [AppService],
 })
 export class AppModule {}
