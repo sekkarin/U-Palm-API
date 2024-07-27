@@ -9,7 +9,8 @@ import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
-import { ProductsModule } from './products/products.module';
+import { ProductsModule } from "./products/products.module";
+import { ProductCategoryModule } from "./product-category/product-category.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ProductsModule } from './products/products.module';
     }),
     SuppliersModule,
     ProductsModule,
+    ProductCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
