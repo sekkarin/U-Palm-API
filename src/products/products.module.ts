@@ -6,6 +6,7 @@ import { Product, ProductSchema } from "./schemas/product.schema";
 import { ProductItem, ProductItemSchema } from "./schemas/product-item.schema";
 import { ProductItemController } from "./product-item.controller";
 import { ProductItemService } from "./product-item.service";
+import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service";
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ProductItemService } from "./product-item.service";
     ]),
   ],
   controllers: [ProductController, ProductItemController],
-  providers: [ProductService, ProductItemService],
+  providers: [ProductService, ProductItemService, ManageFileS3Service],
   exports: [ProductService, ProductItemService],
 })
 export class ProductsModule {}

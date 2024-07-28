@@ -20,21 +20,31 @@ export class Product extends Document {
   @Prop({
     type: String,
   })
-  productImage?: string;
+  product_image?: string;
 
   @Prop({
     required: true,
     type: MongooseSchema.Types.ObjectId,
     ref: "ProductCategory",
   })
-  categoryId: MongooseSchema.Types.ObjectId;
+  category_id: MongooseSchema.Types.ObjectId;
   @Prop({
     required: true,
     type: MongooseSchema.Types.ObjectId,
     ref: "Supplier",
   })
-  supplierId: MongooseSchema.Types.ObjectId;
+  supplier_id: MongooseSchema.Types.ObjectId;
 }
 
 export type ProductDocument = HydratedDocument<Product>;
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+ProductSchema.set("toJSON", {
+  transform(doc, ret) {
+    delete ret["_id"];
+    delete ret["updatedAt"];
+    delete ret["__v"];
+    ret["product_id"] = doc._id;
+    return ret;
+  },
+});

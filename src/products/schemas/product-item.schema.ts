@@ -21,3 +21,12 @@ export class ProductItem extends Document {
 
 export type ProductItemDocument = HydratedDocument<ProductItem>;
 export const ProductItemSchema = SchemaFactory.createForClass(ProductItem);
+ProductItemSchema.set("toJSON", {
+  transform(doc, ret) {
+    delete ret["_id"];
+    delete ret["updatedAt"];
+    delete ret["__v"];
+    ret["product_item_id"] = doc._id;
+    return ret;
+  },
+});

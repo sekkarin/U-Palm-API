@@ -38,11 +38,10 @@ export class Supplier {
 export const SupplierSchema = SchemaFactory.createForClass(Supplier);
 SupplierSchema.set("toJSON", {
   transform(doc, ret) {
-    delete ret["password"];
     delete ret["_id"];
     delete ret["updatedAt"];
     delete ret["__v"];
-    ret["supplierId"] = doc._id;
+    ret["supplier_id"] = doc._id;
     return ret;
   },
 });

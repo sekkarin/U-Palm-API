@@ -1,7 +1,4 @@
-export class UpdateProductDto {
-  readonly name?: string;
-  readonly description?: string;
-  readonly product_image?: string;
-  readonly category_id?: string;
-  readonly supplier?: string; // เพิ่มฟิลด์ supplier
-}
+import { PartialType } from "@nestjs/mapped-types";
+import { CreateProductDto } from "./create-product.dto";
+
+export class UpdateProductDto extends PartialType(CreateProductDto) {}
