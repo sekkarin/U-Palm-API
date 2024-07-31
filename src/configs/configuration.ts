@@ -7,8 +7,8 @@ export default () => ({
     databaseName: process.env.DATABASE_NAME || "U-Palm",
   },
   googleAuth: {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    clientID: process.env.GOOGLE_ID,
+    clientSecret: process.env.GOOGLE_SECRET,
   },
   auth: {
     sessionSecret: process.env.SESSION_SECRET || "SESSION_SECRET",
@@ -18,5 +18,14 @@ export default () => ({
     AWS_S3_BUCKET_REGION: process.env.AWS_S3_BUCKET_REGION,
     AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
     AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
+  },
+  client: {
+    baseUrl: process.env.CLIENT_DOMAIN,
+  },
+  jwt: {
+    accessToken: process.env.JWT_ACCESS_TOKEN,
+    refreshToken: process.env.JWT_REFRESH_TOKEN,
+    expiresAccessToken: process.env.EXPIRES_IN_ACCESS_TOKEN,
+    expiresRefreshToken: process.env.EXPIRES_IN_REFRESH_TOKEN,
   },
 });

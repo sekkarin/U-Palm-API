@@ -6,22 +6,25 @@ import * as passport from "passport";
 import { ValidationPipe } from "@nestjs/common";
 import { redisStore } from "./utils/redisSession";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { corsOptions } from "./utils/corsOptions";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  app.enableCors();
-  app.use(
-    session({
-      secret: configService.getOrThrow<string>("auth.sessionSecret"),
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 90 * 24 * 60 * 60 * 1000 },
-      store: redisStore,
-    }),
-  );
+  app.enableCors({ ...corsOptions });
+  app.use(cookieParser());
+  // TODO: delete lib session
+  // app.use(
+  //   session({
+  //     secret: configService.getOrThrow<string>("auth.sessionSecret"),
+  //     resave: false,
+  //     saveUninitialized: false,
+  //     cookie: { maxAge: 90 * 24 * 60 * 60 * 1000 },
+  //     store: redisStore,
+  //   }),
+  // );
   app.use(passport.initialize());
-  app.use(passport.session());
+  // app.use(passport.session());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
