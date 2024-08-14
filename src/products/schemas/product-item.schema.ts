@@ -1,14 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Schema as MongooseSchema, HydratedDocument } from "mongoose";
+import { Document, HydratedDocument } from "mongoose";
+import { Variation, VariationSchema } from "./variations.schema";
 
 @Schema()
 export class ProductItem extends Document {
-  @Prop({ required: true, type: MongooseSchema.Types.ObjectId, ref: "Product" })
-  product_id: MongooseSchema.Types.ObjectId;
-
-  @Prop({ required: true, type: String })
-  SKU: string;
-
   @Prop({ required: true, type: Number })
   qty_in_stock: number;
 
@@ -17,6 +12,21 @@ export class ProductItem extends Document {
 
   @Prop({ required: true, type: Number })
   price: number;
+
+  @Prop({ required: true, type: Number })
+  qty_discount: number;
+
+  @Prop({ required: true, type: Number })
+  shipping: number;
+
+  @Prop({ required: true, type: Number })
+  profit: number;
+
+  @Prop({ required: true, type: Number })
+  selling_price: number;
+
+  @Prop({ type: [VariationSchema], default: [] })
+  variations?: Variation[];
 }
 
 export type ProductItemDocument = HydratedDocument<ProductItem>;

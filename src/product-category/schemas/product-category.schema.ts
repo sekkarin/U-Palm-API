@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema, HydratedDocument } from "mongoose";
 
-@Schema()
+@Schema({
+  timestamps: true,
+})
 export class ProductCategory extends Document {
   @Prop({ required: true, type: String })
   category_name: string;

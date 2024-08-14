@@ -4,7 +4,7 @@ import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Supplier } from "./schemas/supplier.schema";
 import { Model } from "mongoose";
-import { SupplierPaginationQueryparamsDto } from "./dto/sup-pagination-query-params.dto";
+import { SupplierPaginationQueryParamsDto } from "./dto/sup-pagination-query-params.dto";
 import { PaginatedDto } from "src/utils/dto/paginated.dto";
 import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
 import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service";
@@ -15,27 +15,27 @@ export class SuppliersService {
     @InjectModel(Supplier.name) private supplierModel: Model<Supplier>,
     private readonly uploadFileS3Service: ManageFileS3Service,
   ) {}
-  // file image
+
   async create(createSupplierDto: CreateSupplierDto) {
     try {
       return this.supplierModel.create({
-        name: createSupplierDto.name,
-        description: createSupplierDto.description,
-        imageBanners: createSupplierDto.imageBanners || [],
-        profileImage: createSupplierDto.profileImage || "jpg",
+        ...createSupplierDto,
+        contacts_person_1: {
+          con_person: createSupplierDto.contactPerson1,
+          email: createSupplierDto.contactEmail1,
+          telephone: createSupplierDto.contactTelephone1,
+          address: createSupplierDto.contactAddress1,
+          con_remark: createSupplierDto.contactRemark1,
+        },
+        contacts_person_2: {
+          con_person: createSupplierDto.contactPerson2,
+          email: createSupplierDto.contactEmail2,
+          telephone: createSupplierDto.contactTelephone2,
+          address: createSupplierDto.contactAddress2,
+          con_remark: createSupplierDto.contactRemark2,
+        },
       });
     } catch (error) {
-      if (createSupplierDto.profileImage) {
-        await this.uploadFileS3Service.deleteImage(
-          createSupplierDto.profileImage,
-        );
-      }
-      if (createSupplierDto.imageBanners.length > 0) {
-        createSupplierDto.imageBanners.map(
-          async (imageBanners) =>
-            await this.uploadFileS3Service.deleteImage(imageBanners),
-        );
-      }
       throw error;
     }
   }
@@ -44,7 +44,7 @@ export class SuppliersService {
     page = 1,
     limit = 1,
     query = "",
-  }: SupplierPaginationQueryparamsDto) {
+  }: SupplierPaginationQueryParamsDto) {
     try {
       const itemCount = await this.supplierModel.countDocuments();
 
@@ -52,6 +52,7 @@ export class SuppliersService {
         .find({
           $or: [{ name: { $regex: query, $options: "i" } }],
         })
+        .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit);
 
@@ -70,40 +71,31 @@ export class SuppliersService {
     }
   }
 
-  async update(
-    id: MongoDBObjectIdPipe,
-    updateSupplierDto: UpdateSupplierDto,
-    files: {
-      profileImage?: Express.Multer.File[];
-      imageBanners?: Express.Multer.File[];
-    },
-  ) {
-    const supplier = await this.supplierModel.findById(id);
-
+  async update(id: MongoDBObjectIdPipe, updateSupplierDto: UpdateSupplierDto) {
     try {
-      if (files.profileImage && files.profileImage.length > 0) {
-        if (supplier.profileImage) {
-          await this.uploadFileS3Service.deleteImage(supplier.profileImage);
-        }
-        updateSupplierDto.profileImage =
-          await this.uploadFileS3Service.uploadFile(files.profileImage[0]);
-      }
-      if (files.imageBanners && files.imageBanners.length > 0) {
-        if (supplier.imageBanners && supplier.imageBanners.length > 0) {
-          for (const imagePath of supplier.imageBanners) {
-            await this.uploadFileS3Service.deleteImage(imagePath);
-          }
-        }
-        const imageBanners = await Promise.all(
-          files.imageBanners.map(
-            async (file) => await this.uploadFileS3Service.uploadFile(file),
-          ),
-        );
-        updateSupplierDto.imageBanners = imageBanners;
-      }
-      return await this.supplierModel.findByIdAndUpdate(id, updateSupplierDto, {
-        new: true,
-      });
+      return await this.supplierModel.findByIdAndUpdate(
+        id,
+        {
+          ...updateSupplierDto,
+          contacts_person_1: {
+            con_person: updateSupplierDto.contactPerson1,
+            email: updateSupplierDto.contactEmail1,
+            telephone: updateSupplierDto.contactTelephone1,
+            address: updateSupplierDto.contactAddress1,
+            con_remark: updateSupplierDto.contactRemark1,
+          },
+          contacts_person_2: {
+            con_person: updateSupplierDto.contactPerson2,
+            email: updateSupplierDto.contactEmail2,
+            telephone: updateSupplierDto.contactTelephone2,
+            address: updateSupplierDto.contactAddress2,
+            con_remark: updateSupplierDto.contactRemark2,
+          },
+        },
+        {
+          new: true,
+        },
+      );
     } catch (error) {
       throw error;
     }
@@ -116,9 +108,9 @@ export class SuppliersService {
         throw new NotFoundException("Supplier not found");
       }
       await this.uploadFileS3Service.deleteImage(supplier.profileImage);
-      supplier.imageBanners.map(
-        async (image) => await this.uploadFileS3Service.deleteImage(image),
-      );
+      // supplier.imageBanners.map(
+      //   async (image) => await this.uploadFileS3Service.deleteImage(image),
+      // );
       return supplier;
     } catch (error) {
       throw error;

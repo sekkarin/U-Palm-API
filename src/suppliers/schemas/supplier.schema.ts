@@ -3,6 +3,54 @@ import { HydratedDocument } from "mongoose";
 
 export type SupplierDocument = HydratedDocument<Supplier>;
 
+@Schema()
+class Contact {
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+    trim: true,
+  })
+  con_person: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+    trim: true,
+  })
+  email: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+    trim: true,
+  })
+  telephone: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+    trim: true,
+  })
+  address: string;
+
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+    trim: true,
+  })
+  con_remark: string;
+}
+
 @Schema({
   timestamps: true,
 })
@@ -12,27 +60,69 @@ export class Supplier {
     type: String,
     max: 50,
     min: 3,
+    trim: true,
   })
   name: string;
-
-  @Prop({
-    type: String,
-    max: 256,
-  })
-  description?: string;
-
-  @Prop({
-    type: [String],
-  })
-  imageBanners: string[];
 
   @Prop({
     required: true,
     type: String,
     max: 50,
     min: 3,
+    trim: true,
   })
-  profileImage: string;
+  email: string;
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  country: string;
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  city: string;
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  state: string;
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  zip: string;
+  @Prop({
+    required: true,
+    type: String,
+    max: 50,
+    min: 3,
+  })
+  address: string;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  profileImage?: string;
+
+  @Prop({
+    required: true,
+    type: Object,
+  })
+  contacts_person_1: Contact;
+  @Prop({
+    type: Object,
+  })
+  contacts_person_2: Contact;
 }
 
 export const SupplierSchema = SchemaFactory.createForClass(Supplier);

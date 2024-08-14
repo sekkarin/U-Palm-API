@@ -6,10 +6,12 @@ import {
   Param,
   Put,
   Delete,
+  Query,
 } from "@nestjs/common";
 import { ProductCategoryService } from "./product-category.service";
 import { CreateProductCategoryDto } from "./dto/create-product-category.dto";
 import { UpdateProductCategoryDto } from "./dto/update-product-category.dto";
+import { SupplierPaginationQueryParamsDto } from "src/suppliers/dto/sup-pagination-query-params.dto";
 
 @Controller("categories")
 export class ProductCategoryController {
@@ -21,8 +23,14 @@ export class ProductCategoryController {
   }
 
   @Get()
-  async findAll() {
-    return this.categoryService.findAll();
+  async findAll(
+    @Query() supplierPaginationQueryParamsDto: SupplierPaginationQueryParamsDto,
+  ) {
+    try {
+      return this.categoryService.findAll(supplierPaginationQueryParamsDto);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get(":id")

@@ -1,10 +1,8 @@
 import { NestFactory } from "@nestjs/core";
-import * as session from "express-session";
-import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
 import * as passport from "passport";
 import { ValidationPipe } from "@nestjs/common";
-import { redisStore } from "./utils/redisSession";
+
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { corsOptions } from "./utils/corsOptions";
 import * as cookieParser from "cookie-parser";
@@ -24,7 +22,7 @@ async function bootstrap() {
   //   }),
   // );
   app.use(passport.initialize());
-  // app.use(passport.session());
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,

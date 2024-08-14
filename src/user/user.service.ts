@@ -19,6 +19,7 @@ export class UserService {
   async createUserLocal(createUserDto: CreateUserDto) {
     try {
       let passwordHash: string | undefined;
+      ``;
 
       const userExists = await this.userModel.findOne({
         email: createUserDto.email,

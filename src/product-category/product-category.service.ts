@@ -7,6 +7,8 @@ import {
 } from "./schemas/product-category.schema";
 import { CreateProductCategoryDto } from "./dto/create-product-category.dto";
 import { UpdateProductCategoryDto } from "./dto/update-product-category.dto";
+import { SupplierPaginationQueryParamsDto } from "src/suppliers/dto/sup-pagination-query-params.dto";
+import { PaginatedDto } from "src/utils/dto/paginated.dto";
 
 @Injectable()
 export class ProductCategoryService {
@@ -22,8 +24,30 @@ export class ProductCategoryService {
     return createdCategory.save();
   }
 
-  async findAll(): Promise<ProductCategory[]> {
-    return this.categoryModel.find().exec();
+  async findAll({
+    page = 1,
+    limit = 1,
+    query = "",
+  }: SupplierPaginationQueryParamsDto): Promise<PaginatedDto<ProductCategory>> {
+    try {
+      const itemCount = await this.categoryModel.countDocuments();
+      const categories = await this.categoryModel
+        .find({
+          $or: [{ category_name: { $regex: query, $options: "i" } }],
+        })
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      return new PaginatedDto<ProductCategory>(
+        categories,
+        page,
+        limit,
+        itemCount,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(id: string): Promise<ProductCategory> {

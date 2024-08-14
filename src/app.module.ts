@@ -11,10 +11,7 @@ import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
 import { ProductsModule } from "./products/products.module";
 import { ProductController } from "./products/products.controller";
-import { ProductItemController } from "./products/product-item.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
-import { VariationModule } from './variation/variation.module';
-import { ProductConfigurationModule } from './product-configuration/product-configuration.module';
 
 @Module({
   imports: [
@@ -38,15 +35,13 @@ import { ProductConfigurationModule } from './product-configuration/product-conf
     AuthModule,
     UserModule,
     PassportModule.register({
-      session: true,
+      session: false,
     }),
     SuppliersModule,
     ProductsModule,
     ProductCategoryModule,
-    VariationModule,
-    ProductConfigurationModule,
   ],
-  controllers: [AppController, ProductController, ProductItemController],
+  controllers: [AppController, ProductController],
   providers: [AppService],
 })
 export class AppModule {}

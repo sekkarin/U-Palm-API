@@ -1,20 +1,40 @@
-import { IsNotEmpty, IsOptional, IsString, Length } from "class-validator";
+import {
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+  MaxLength,
+  IsArray,
+  IsMongoId,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { ProductItemDto } from "./product-item.dto";
 
 export class CreateProductDto {
   @IsString()
-  @Length(3, 50)
   @IsNotEmpty()
-  readonly name: string;
+  @MaxLength(50)
+  name: string;
+
   @IsString()
-  @Length(3, 255)
   @IsOptional()
-  readonly description?: string;
+  description?: string;
+
   @IsString()
-  @Length(3, 50)
+  @IsOptional()
+  product_image?: string;
+
+  @IsMongoId()
   @IsNotEmpty()
-  readonly category_id: string;
-  @IsString()
-  @Length(3, 50)
+  category_id: string;
+
+  @IsMongoId()
   @IsNotEmpty()
-  readonly supplier_id: string; // เพิ่มฟิลด์ supplier
+  supplier_id: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductItemDto)
+  @IsOptional()
+  items?: ProductItemDto[];
 }
