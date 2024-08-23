@@ -1,3 +1,4 @@
+import { Type } from "class-transformer";
 import {
   IsString,
   IsOptional,
@@ -5,9 +6,9 @@ import {
   MaxLength,
   IsArray,
   IsMongoId,
+  ArrayNotEmpty,
   ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
 import { ProductItemDto } from "./product-item.dto";
 
 export class CreateProductDto {
@@ -20,9 +21,16 @@ export class CreateProductDto {
   @IsOptional()
   description?: string;
 
+  @IsArray()
+  @IsString({ each: true }) // Validate each entry in the array as a string
+  @ArrayNotEmpty() // Ensures the array is not empty
+  @IsNotEmpty()
+  @IsOptional()
+  product_image?: string[];
+
   @IsString()
   @IsOptional()
-  product_image?: string;
+  image_banner_adverting?: string;
 
   @IsMongoId()
   @IsNotEmpty()
@@ -37,4 +45,5 @@ export class CreateProductDto {
   @Type(() => ProductItemDto)
   @IsOptional()
   items?: ProductItemDto[];
+
 }

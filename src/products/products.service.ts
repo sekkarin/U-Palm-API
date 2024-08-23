@@ -13,27 +13,14 @@ export class ProductService {
     private readonly uploadFileS3Service: ManageFileS3Service,
   ) {}
 
-  async create(
-    createProductDto: CreateProductDto,
-    files: {
-      product_image?: Express.Multer.File[];
-    },
-  ): Promise<Product> {
-    if (!files.product_image) {
-      throw new BadRequestException("product image is required");
-    }
-    const productImage = await this.uploadFileS3Service.uploadFile(
-      files.product_image[0],
-    );
-    const createdProduct = new this.productModel({
-      ...createProductDto,
-      product_image: productImage,
-    });
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const createdProduct = new this.productModel(createProductDto);
+    //TODO: not save
     return createdProduct.save();
   }
 
   async findAll(): Promise<Product[]> {
-    return this.productModel.find().exec();
+    return this.productModel.find().populate("category_id").exec();
   }
 
   async findOne(id: string): Promise<Product> {
@@ -53,12 +40,12 @@ export class ProductService {
     let productImage: undefined | string;
     const product = await this.productModel.findOne({ _id: id });
 
-    if (files.product_image.length > 0) {
-      await this.uploadFileS3Service.deleteImage(product.product_image);
-      productImage = await this.uploadFileS3Service.uploadFile(
-        files.product_image[0],
-      );
-    }
+    // if (files.product_image.length > 0) {
+    //   await this.uploadFileS3Service.deleteImage(product.product_image);
+    //   productImage = await this.uploadFileS3Service.uploadFile(
+    //     files.product_image[0],
+    //   );
+    // }
 
     return this.productModel
       .findByIdAndUpdate(
@@ -72,7 +59,7 @@ export class ProductService {
   async remove(id: string): Promise<Product> {
     const product = await this.productModel.findByIdAndDelete(id).exec();
     if (product.product_image) {
-      await this.uploadFileS3Service.deleteImage(product.product_image);
+      // await this.uploadFileS3Service.deleteImage(product.product_image);
     }
     return product;
   }

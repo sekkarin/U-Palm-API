@@ -9,19 +9,27 @@ export class Product extends Document {
   @Prop({
     required: true,
     type: String,
+    trim: true,
     max: 50,
   })
   name: string;
 
   @Prop({
     type: String,
+    trim: true,
   })
   description?: string;
 
   @Prop({
-    type: String,
+    type: [String],
+    required: true,
   })
-  product_image?: string;
+  product_image: string[];
+  @Prop({
+    type: String,
+    required: true,
+  })
+  image_banner_adverting: string;
 
   @Prop({
     required: true,

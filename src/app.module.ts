@@ -12,6 +12,7 @@ import { SuppliersModule } from "./suppliers/suppliers.module";
 import { ProductsModule } from "./products/products.module";
 import { ProductController } from "./products/products.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
+import { ManageFileS3Service } from "./utils/services/up-load-file-s3.service";
 
 @Module({
   imports: [
@@ -42,6 +43,6 @@ import { ProductCategoryModule } from "./product-category/product-category.modul
     ProductCategoryModule,
   ],
   controllers: [AppController, ProductController],
-  providers: [AppService],
+  providers: [AppService, ManageFileS3Service],
 })
 export class AppModule {}
