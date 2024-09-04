@@ -74,7 +74,7 @@ UserSchema.set("toJSON", {
     delete ret["_id"];
     delete ret["updatedAt"];
     delete ret["__v"];
-    ret["userId"] = doc._id;
+    ret["user_id"] = doc._id.toString();
     return ret;
   },
 });

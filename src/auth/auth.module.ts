@@ -9,6 +9,8 @@ import { UserService } from "src/user/user.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "src/user/schemas/user.schema";
 import { LocalLoginStrategy } from "./strategy/local-login.strategy";
+import { JwtModule } from "@nestjs/jwt";
+import { UserModule } from "src/user/user.module";
 
 @Module({
   controllers: [AuthController],
@@ -27,6 +29,10 @@ import { LocalLoginStrategy } from "./strategy/local-login.strategy";
         schema: UserSchema,
       },
     ]),
+    JwtModule.register({
+      global: true,
+    }),
+    UserModule,
   ],
 })
 export class AuthModule implements NestModule {

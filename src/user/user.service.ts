@@ -19,6 +19,7 @@ export class UserService {
   async createUserLocal(createUserDto: CreateUserDto) {
     try {
       let passwordHash: string | undefined;
+      ``;
 
       const userExists = await this.userModel.findOne({
         email: createUserDto.email,
@@ -105,7 +106,8 @@ export class UserService {
         .findOne({
           email: userInfo.email,
         })
-        .select("+password");
+        .select("+password")
+        .exec();
 
       if (!userExists) {
         throw new UnauthorizedException("User does not exist");

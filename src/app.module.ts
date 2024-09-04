@@ -9,6 +9,10 @@ import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
 import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
+import { ProductsModule } from "./products/products.module";
+import { ProductController } from "./products/products.controller";
+import { ProductCategoryModule } from "./product-category/product-category.module";
+import { ManageFileS3Service } from "./utils/services/up-load-file-s3.service";
 
 @Module({
   imports: [
@@ -32,11 +36,13 @@ import { SuppliersModule } from "./suppliers/suppliers.module";
     AuthModule,
     UserModule,
     PassportModule.register({
-      session: true,
+      session: false,
     }),
     SuppliersModule,
+    ProductsModule,
+    ProductCategoryModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ProductController],
+  providers: [AppService, ManageFileS3Service],
 })
 export class AppModule {}
