@@ -10,7 +10,8 @@ export class Product extends Document {
     required: true,
     type: String,
     trim: true,
-    max: 50,
+    unique: true,
+    max: 100,
   })
   name: string;
 

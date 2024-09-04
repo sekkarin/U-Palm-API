@@ -57,11 +57,11 @@ export class CreateSupplierDto {
 
   @IsString()
   @IsNotEmpty()
-  @Length(8, 15)
+  @Length(8, 20)
   contactTelephone1: string;
 
   @IsString()
-  @Length(8, 15)
+  @Length(8, 20)
   @IsOptional()
   contactTelephone2?: string;
 

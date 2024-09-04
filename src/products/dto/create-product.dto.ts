@@ -14,7 +14,7 @@ import { ProductItemDto } from "./product-item.dto";
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(100)
   name: string;
 
   @IsString()

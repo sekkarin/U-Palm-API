@@ -11,3 +11,13 @@ export class Variation extends Document {
 
 export type VariationDocument = HydratedDocument<Variation>;
 export const VariationSchema = SchemaFactory.createForClass(Variation);
+VariationSchema.set("toJSON", {
+  transform(doc, ret) {
+    delete ret["_id"];
+    delete ret["id"];
+    delete ret["updatedAt"];
+    delete ret["__v"];
+    ret["variation_id"] = doc._id;
+    return ret;
+  },
+});
