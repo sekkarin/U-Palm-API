@@ -1,14 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, HydratedDocument } from "mongoose";
-import { Variation, VariationSchema } from "./variations.schema";
+import { Document, HydratedDocument, Types } from "mongoose";
+import { Variation } from "./variations.schema";
 
 @Schema()
 export class ProductItem extends Document {
   @Prop({ required: true, type: Number })
   qty_in_stock: number;
-
-  // @Prop({ type: String, required: true })
-  // product_image_item?: string;
 
   @Prop({ required: true, type: Number })
   base_price: number;
@@ -25,8 +22,11 @@ export class ProductItem extends Document {
   @Prop({ required: true, type: Number })
   profit: number;
 
-  @Prop({ type: [VariationSchema], default: [] })
-  variations?: Variation[];
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: Variation.name }], // อ้างอิงไปยัง Variation
+    default: [],
+  })
+  variations?: Types.ObjectId[];
 }
 
 export type ProductItemDocument = HydratedDocument<ProductItem>;

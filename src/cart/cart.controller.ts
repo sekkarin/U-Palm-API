@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CartService } from './cart.service';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
+import { CartService } from "./cart.service";
+import { CreateCartItemDto } from "./dto/create-cart.dto";
+import { UpdateCartDto } from "./dto/update-cart.dto";
+import { Request } from "express";
+import { AuthenticatedGuard } from "src/auth/guards/auth.guard";
 
-@Controller('cart')
+@Controller("carts")
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  create(@Body() createCartDto: CreateCartDto) {
-    return this.cartService.create(createCartDto);
+  @UseGuards(AuthenticatedGuard)
+  addCartItem(@Req() req: Request, @Body() createCartDto: CreateCartItemDto) {
+    const userId = req.user["user_id"];
+
+    return this.cartService.addCartItem(userId, createCartDto);
   }
 
   @Get()
-  findAll() {
-    return this.cartService.findAll();
+  @UseGuards(AuthenticatedGuard)
+  findAll(@Req() req: Request) {
+    const userId = req.user["user_id"];
+    return this.cartService.getCartByUserId(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.cartService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() updateCartDto: UpdateCartDto) {
     return this.cartService.update(+id, updateCartDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete(":id")
+  remove(@Param("id") id: string) {
     return this.cartService.remove(+id);
   }
 }

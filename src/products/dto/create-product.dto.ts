@@ -9,7 +9,7 @@ import {
   ArrayNotEmpty,
   ValidateNested,
 } from "class-validator";
-import { ProductItemDto } from "./product-item.dto";
+import { CreateProductItemDto } from "./product-item.dto";
 
 export class CreateProductDto {
   @IsString()
@@ -42,8 +42,7 @@ export class CreateProductDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => ProductItemDto)
+  @Type(() => CreateProductItemDto)
   @IsOptional()
-  items?: ProductItemDto[];
-
+  items?: CreateProductItemDto[];
 }

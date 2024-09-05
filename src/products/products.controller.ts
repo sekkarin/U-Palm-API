@@ -137,7 +137,7 @@ export class ProductController {
       updateProductDto.product_image = imageUrls;
     }
     try {
-      return this.productService.update(id, updateProductDto, files);
+      return this.productService.update(id, updateProductDto);
     } catch (error) {
       await this.uploadFileS3Service.deleteImage(
         updateProductDto.image_banner_adverting,

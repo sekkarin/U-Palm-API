@@ -1,6 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, HydratedDocument, Schema as MongooseSchema } from "mongoose";
-import { ProductItem, ProductItemSchema } from "./product-item.schema";
+import {
+  Document,
+  HydratedDocument,
+  Schema as MongooseSchema,
+  Types,
+} from "mongoose";
+import { ProductItem } from "./product-item.schema";
 
 @Schema({
   timestamps: true,
@@ -10,7 +15,6 @@ export class Product extends Document {
     required: true,
     type: String,
     trim: true,
-    unique: true,
     max: 100,
   })
   name: string;
@@ -46,10 +50,10 @@ export class Product extends Document {
   supplier_id: MongooseSchema.Types.ObjectId;
 
   @Prop({
-    type: [ProductItemSchema],
+    type: [{ type: Types.ObjectId, ref: ProductItem.name }], // อ้างอิงไปยัง ProductItem
     default: [],
   })
-  items?: ProductItem[];
+  items?: Types.ObjectId[];
 }
 
 export type ProductDocument = HydratedDocument<Product>;
