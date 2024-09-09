@@ -4,12 +4,11 @@ import {
   ValidateNested,
   IsArray,
   IsNotEmpty,
-  IsString,
 } from "class-validator";
 import { Transform, Type } from "class-transformer";
-import { VariationDto } from "./variation.dto";
+import { CreateVariationDto } from "./variation.dto";
 
-export class ProductItemDto {
+export class CreateProductItemDto {
   @Transform(({ value }) => Number(value))
   @IsNumber()
   @IsNotEmpty()
@@ -46,7 +45,7 @@ export class ProductItemDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => VariationDto)
+  @Type(() => CreateVariationDto)
   @IsOptional()
-  variations?: VariationDto[];
+  variations?: CreateVariationDto[];
 }
