@@ -13,7 +13,7 @@ import { ProductsModule } from "./products/products.module";
 import { ProductController } from "./products/products.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
 import { ManageFileS3Service } from "./utils/services/up-load-file-s3.service";
-import { CartModule } from './cart/cart.module';
+import { CartModule } from "./cart/cart.module";
 
 @Module({
   imports: [

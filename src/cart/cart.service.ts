@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { CreateCartItemDto } from "./dto/create-cart.dto";
-import { UpdateCartDto } from "./dto/update-cart.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Cart, CartDocument } from "./schemas/cart.schema";
 import { Model, Types } from "mongoose";
@@ -17,6 +16,7 @@ import {
   VariationDocument,
 } from "src/products/schemas/variations.schema";
 import { CartItem, CartItemDocument } from "./schemas/cart-item.schema";
+import { Product } from "src/products/schemas/product.schema";
 
 @Injectable()
 export class CartService {
@@ -50,11 +50,35 @@ export class CartService {
 
     return cart;
   }
+  async getItemsCart(userId: string) {
+    const cart = await this.cartModel
+      .find({ user_id: userId })
+      .populate({
+        path: "items.product_item_id",
+        model: ProductItem.name,
+      })
+      .populate({
+        path: "items.product_id",
+        model: Product.name,
+      })
+      .populate({
+        path: "items.variation_id",
+        model: Variation.name,
+      })
+      .exec();
+
+    if (!cart) {
+      throw new NotFoundException(`Cart with ID not found`);
+    }
+
+    return cart;
+  }
   async addCartItem(
     userId: string,
     createCartItemDto: CreateCartItemDto,
   ): Promise<Cart> {
     // ค้นหา Cart ของผู้ใช้ตาม userId
+
     let cart = await this.cartModel.findOne({
       user_id: new Types.ObjectId(userId),
     });
@@ -80,11 +104,11 @@ export class CartService {
       // ถ้ามีสินค้านี้อยู่ในตะกร้าแล้ว ให้เพิ่มจำนวน (qty)
       cart.items[existingCartItemIndex].qty += createCartItemDto.qty;
     } else {
-      // ถ้ายังไม่มีสินค้า ให้เพิ่ม CartItem ใหม่เข้าไปในตะกร้า
       const newCartItem = new this.cartItemModel({
         product_item_id: createCartItemDto.product_item_id,
         qty: createCartItemDto.qty,
         variation_id: createCartItemDto.variation_id,
+        product_id: createCartItemDto.product_id,
       });
       cart.items.push(newCartItem);
     }
@@ -96,19 +120,67 @@ export class CartService {
     }
   }
 
-  findAll() {
-    return `This action returns all cart`;
-  }
+  async removeItemFromCart(userId: string, productItemId: string) {
+    const cart = await this.cartModel.findOne({
+      user_id: new Types.ObjectId(userId),
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} cart`;
-  }
+    if (!cart) {
+      throw new NotFoundException(`Cart for user ID ${userId} not found`);
+    }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
-  }
+    await this.cartItemModel.deleteOne({
+      cart_id: cart._id,
+      product_item_id: productItemId,
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+    return this.getItemsCart(userId);
+  }
+  async adjustItemQuantity(
+    userId: string,
+    productItemId: string,
+    variationId: string,
+    qty: number,
+  ) {
+    const cart = await this.cartModel
+      .findOne({ user_id: new Types.ObjectId(userId) })
+      .exec();
+
+    if (!cart) {
+      throw new NotFoundException(`Cart for user ID ${userId} not found`);
+    }
+
+    // Find the cart item that matches the productItemId
+    const cartItemIndex = cart.items.findIndex(
+      (item) =>
+        item.product_item_id.toString() === productItemId &&
+        item.variation_id.toString() === variationId,
+    );
+    console.log(variationId);
+
+    if (cartItemIndex !== -1) {
+      // Update existing cart item quantity
+      cart.items[cartItemIndex].qty = qty;
+      if (cart.items[cartItemIndex].qty <= 0) {
+        // Remove item if quantity is 0 or less
+        cart.items.splice(cartItemIndex, 1);
+      }
+    }
+    // else {
+    //   if (qty > 0) {
+    //     // Add new item to the cart
+    //     cart.items.push({
+    //       product_item_id: new Types.ObjectId(productItemId),
+    //       qty,
+    //       product_id: new ObjectId,
+    //       variation_id: new ObjectId
+    //     });
+    //   }
+    // }
+
+    // Save the updated cart
+    // await cart.save();
+
+    return await cart.save();
   }
 }

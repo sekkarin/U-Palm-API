@@ -16,19 +16,6 @@ export class Cart {
   })
   user_id: string;
 
-  @Prop({
-    type: [
-      {
-        product_item_id: {
-          type: MongooseSchema.Types.ObjectId,
-          ref: "ProductItem",
-        }, // อ้างอิงไปยัง ProductItem
-        qty: { type: Number, required: true },
-        variation_id: { type: MongooseSchema.Types.ObjectId, ref: "Variation" }, // อ้างอิงไปยัง Variation
-      },
-    ],
-    default: [],
-  })
   @Prop({ type: [CartItemSchema], default: [] })
   items: CartItem[];
 }
