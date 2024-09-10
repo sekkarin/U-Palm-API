@@ -28,4 +28,8 @@ export default () => ({
     expiresAccessToken: process.env.EXPIRES_IN_ACCESS_TOKEN,
     expiresRefreshToken: process.env.EXPIRES_IN_REFRESH_TOKEN,
   },
+  admin: {
+    email: process.env.ADMIN_EMAIL,
+    password_hashed: process.env.PASSWORD_HASHED,
+  },
 });

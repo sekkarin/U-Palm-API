@@ -14,6 +14,7 @@ import { ProductController } from "./products/products.controller";
 import { ProductCategoryModule } from "./product-category/product-category.module";
 import { ManageFileS3Service } from "./utils/services/up-load-file-s3.service";
 import { CartModule } from "./cart/cart.module";
+import { User, UserSchema } from "./user/schemas/user.schema";
 
 @Module({
   imports: [
@@ -43,6 +44,12 @@ import { CartModule } from "./cart/cart.module";
     ProductsModule,
     ProductCategoryModule,
     CartModule,
+    MongooseModule.forFeature([
+      {
+        name: User.name,
+        schema: UserSchema,
+      },
+    ]),
   ],
   controllers: [AppController, ProductController],
   providers: [AppService, ManageFileS3Service],

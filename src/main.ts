@@ -21,6 +21,7 @@ async function bootstrap() {
   //     store: redisStore,
   //   }),
   // );
+  // TODO: Seed Admin
   app.use(passport.initialize());
 
   app.useGlobalPipes(

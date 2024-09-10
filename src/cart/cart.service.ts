@@ -156,8 +156,6 @@ export class CartService {
         item.product_item_id.toString() === productItemId &&
         item.variation_id.toString() === variationId,
     );
-    console.log(variationId);
-
     if (cartItemIndex !== -1) {
       // Update existing cart item quantity
       cart.items[cartItemIndex].qty = qty;
