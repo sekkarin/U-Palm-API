@@ -2,7 +2,7 @@ name: CD/CD-api
 on:
   push:
     branches:
-      - main
+      - master
 jobs:
   
   build:
