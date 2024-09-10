@@ -29,6 +29,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.setGlobalPrefix("api");
   const config = new DocumentBuilder()
     .setTitle("U Palm api Documentation")
     .setDescription("The U palm API description")
