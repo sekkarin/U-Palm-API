@@ -30,7 +30,7 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix("api");
-  if (process.env.NODE_ENV == 'dev') {
+  if (process.env.NODE_ENV == "dev") {
     const config = new DocumentBuilder()
       .setTitle("U Palm api Documentation")
       .setDescription("The U palm API description")

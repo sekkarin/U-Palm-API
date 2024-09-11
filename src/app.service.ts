@@ -16,7 +16,7 @@ export class AppService implements OnApplicationBootstrap {
       firstName: "UPalm",
       lastName: "Admin",
       email: this.configService.getOrThrow<string>("admin.email"),
-      password: this.configService.getOrThrow<string>("admin.password_hashed"),
+      password: "$2b$10$3v4QEKp5lVVAihFTLukpWuzSi.kVVxpCamRNBpRiqUxZiLbPiYAQm",
       roles: [1001, 3001],
       isVerifiedAccount: true,
     };
