@@ -46,7 +46,7 @@ export class ProductController {
           callback(null, true);
         },
         limits: {
-          fileSize: 5000000,
+          fileSize: 10000000,
         },
       },
     ),
@@ -109,7 +109,7 @@ export class ProductController {
         callback(null, true);
       },
       limits: {
-        fileSize: 5000000,
+        fileSize: 10000000,
       },
     }),
   )
