@@ -21,7 +21,7 @@ export default () => ({
     AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
   },
   client: {
-    baseUrl: process.env.CLIENT_DOMAIN,
+    baseUrl: process.env.CLIENT_URL,
   },
   jwt: {
     accessToken: process.env.JWT_ACCESS_TOKEN,
