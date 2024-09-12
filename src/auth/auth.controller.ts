@@ -4,7 +4,6 @@ import {
   UseGuards,
   Request,
   Post,
-  Redirect,
   Req,
   UnauthorizedException,
   Res,
@@ -18,11 +17,15 @@ import { AuthGuard } from "@nestjs/passport";
 import { ValidateUserDto } from "src/user/dto/validate-user.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { Response } from "express";
+import { ConfigService } from "@nestjs/config";
 
 @Controller("auth")
 @ApiTags("Authentication")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Get("logout")
   @UseGuards(AuthenticatedGuard)
@@ -45,12 +48,13 @@ export class AuthController {
     description: "Successfully redirected to Google OAuth",
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  @Redirect("https://www.u-palm.com/", 302)
-  async googleAuthRedirect(@Request() req, @Res() res) {
+  async googleAuthRedirect(@Request() req, @Res() res: Response) {
+    const redirectURL = this.config.getOrThrow<string>("client.baseUrl");
     try {
       if (req.user) {
-        const { access_token, refresh_token } =
-          await this.authService.credentialJWT(req.user.id);
+        const { refresh_token } = await this.authService.credentialJWT(
+          req.user.id,
+        );
         const maxAgeMilliseconds = 60 * 24 * 60 * 60 * 1000;
 
         res.cookie("refresh_token", refresh_token, {
@@ -58,7 +62,7 @@ export class AuthController {
           secure: false,
           maxAge: maxAgeMilliseconds,
         });
-        return { access_token, refresh_token };
+        return res.redirect(redirectURL);
       }
       throw new UnauthorizedException("Invalid credentials for authentication");
     } catch (error) {
