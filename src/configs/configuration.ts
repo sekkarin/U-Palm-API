@@ -9,6 +9,7 @@ export default () => ({
   googleAuth: {
     clientID: process.env.GOOGLE_ID,
     clientSecret: process.env.GOOGLE_SECRET,
+    callBackURL: process.env.GOOGLE_CALL_BACK_URL,
   },
   auth: {
     sessionSecret: process.env.SESSION_SECRET || "SESSION_SECRET",
