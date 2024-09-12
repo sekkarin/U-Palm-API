@@ -58,8 +58,8 @@ export class AuthController {
         const maxAgeMilliseconds = 60 * 24 * 60 * 60 * 1000;
 
         res.cookie("refresh_token", refresh_token, {
-          httpOnly: false,
-          secure: false,
+          httpOnly: true,
+          secure: true,
           maxAge: maxAgeMilliseconds,
         });
         return res.redirect(redirectURL);
