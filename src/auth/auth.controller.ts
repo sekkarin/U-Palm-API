@@ -45,7 +45,7 @@ export class AuthController {
     description: "Successfully redirected to Google OAuth",
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  @Redirect(process.env.CLIENT_DOMAIN, 302)
+  @Redirect("https://www.u-palm.com/", 302)
   async googleAuthRedirect(@Request() req, @Res() res) {
     try {
       if (req.user) {
