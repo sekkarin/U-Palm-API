@@ -28,14 +28,13 @@ export class AuthController {
   ) {}
 
   @Get("logout")
-  @UseGuards(AuthenticatedGuard)
   @ApiOperation({ summary: "Logs out the user" })
   @ApiResponse({
     status: 200,
     description: "Successfully logged out",
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  async logout(@Req() req, @Res() res: Response) {
+  async logout(@Res() res: Response) {
     res.clearCookie("refresh_token");
     return res.status(200).json({ message: "logout success" });
   }

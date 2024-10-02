@@ -54,6 +54,11 @@ export class Product extends Document {
     default: [],
   })
   items?: Types.ObjectId[];
+  @Prop({
+    type: Date,
+    default: null,
+  })
+  isDeleted: Date;
 }
 
 export type ProductDocument = HydratedDocument<Product>;

@@ -31,14 +31,14 @@ export class ManageFileS3Service {
     const bucketRegion = this.configService.getOrThrow<string>(
       "s3.AWS_S3_BUCKET_REGION",
     );
-    const buffer = await sharp(file.buffer)
-      .resize(250, 250, { fit: "contain" })
-      .toBuffer();
+    // const buffer = await sharp(file.buffer)
+    //   .resize(250, 250, { fit: "contain" })
+    //   .toBuffer();
     const key = `${Date.now().toString()}-${file.originalname}`;
     const params = {
       Bucket: bucketName,
       Key: key,
-      Body: buffer,
+      Body: file.buffer,
       ContentType: file.mimetype,
       // ACL: 'public-read',
     };
