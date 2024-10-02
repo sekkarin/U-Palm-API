@@ -4,7 +4,6 @@ import {
   UseGuards,
   Request,
   Post,
-  Redirect,
   Req,
   UnauthorizedException,
   Res,
@@ -18,21 +17,24 @@ import { AuthGuard } from "@nestjs/passport";
 import { ValidateUserDto } from "src/user/dto/validate-user.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { Response } from "express";
+import { ConfigService } from "@nestjs/config";
 
 @Controller("auth")
 @ApiTags("Authentication")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Get("logout")
-  @UseGuards(AuthenticatedGuard)
   @ApiOperation({ summary: "Logs out the user" })
   @ApiResponse({
     status: 200,
     description: "Successfully logged out",
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  async logout(@Req() req, @Res() res: Response) {
+  async logout(@Res() res: Response) {
     res.clearCookie("refresh_token");
     return res.status(200).json({ message: "logout success" });
   }
@@ -45,20 +47,21 @@ export class AuthController {
     description: "Successfully redirected to Google OAuth",
   })
   @ApiResponse({ status: 401, description: "Unauthorized" })
-  @Redirect("http://localhost:3001/", 302)
-  async googleAuthRedirect(@Request() req, @Res() res) {
+  async googleAuthRedirect(@Request() req, @Res() res: Response) {
+    const redirectURL = this.config.getOrThrow<string>("client.baseUrl");
     try {
       if (req.user) {
-        const { access_token, refresh_token } =
-          await this.authService.credentialJWT(req.user.id);
+        const { refresh_token } = await this.authService.credentialJWT(
+          req.user.id,
+        );
         const maxAgeMilliseconds = 60 * 24 * 60 * 60 * 1000;
 
         res.cookie("refresh_token", refresh_token, {
-          httpOnly: false,
-          secure: false,
+          httpOnly: true,
+          secure: true,
           maxAge: maxAgeMilliseconds,
         });
-        return { access_token, refresh_token };
+        return res.redirect(redirectURL);
       }
       throw new UnauthorizedException("Invalid credentials for authentication");
     } catch (error) {

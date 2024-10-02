@@ -21,6 +21,7 @@ async function bootstrap() {
   //     store: redisStore,
   //   }),
   // );
+  // TODO: Seed Admin
   app.use(passport.initialize());
 
   app.useGlobalPipes(
@@ -28,13 +29,16 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  const config = new DocumentBuilder()
-    .setTitle("U Palm api Documentation")
-    .setDescription("The U palm API description")
-    .setVersion("1.0")
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("", app, document);
+  app.setGlobalPrefix("api");
+  if (process.env.NODE_ENV == "dev") {
+    const config = new DocumentBuilder()
+      .setTitle("U Palm api Documentation")
+      .setDescription("The U palm API description")
+      .setVersion("1.0")
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("", app, document);
+  }
   await app.listen(3000);
 }
 bootstrap();

@@ -30,8 +30,6 @@ export class AuthenticatedGuard implements CanActivate {
 
       request["user"] = payload;
     } catch (error) {
-      console.log(error);
-
       if (error instanceof JsonWebTokenError) {
         throw new ForbiddenException({
           name: error.name,
