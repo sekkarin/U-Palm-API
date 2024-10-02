@@ -45,9 +45,6 @@ export class ProductController {
           }
           callback(null, true);
         },
-        limits: {
-          fileSize: 10000000,
-        },
       },
     ),
   )
@@ -107,9 +104,6 @@ export class ProductController {
           return callback(new BadRequestException("Invalid file type"), false);
         }
         callback(null, true);
-      },
-      limits: {
-        fileSize: 10000000,
       },
     }),
   )
