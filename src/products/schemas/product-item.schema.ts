@@ -27,6 +27,12 @@ export class ProductItem extends Document {
     default: [],
   })
   variations?: Types.ObjectId[];
+
+  @Prop({
+    type: Date,
+    default: null,
+  })
+  isDeleted: Date;
 }
 
 export type ProductItemDocument = HydratedDocument<ProductItem>;

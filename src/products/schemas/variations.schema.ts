@@ -7,6 +7,11 @@ export class Variation extends Document {
   name: string;
   @Prop({ required: true, type: String })
   value: string;
+  @Prop({
+    type: Date,
+    default: null,
+  })
+  isDeleted: Date;
 }
 
 export type VariationDocument = HydratedDocument<Variation>;

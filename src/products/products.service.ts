@@ -14,6 +14,7 @@ import {
   ProductItemDocument,
 } from "./schemas/product-item.schema";
 import { Variation, VariationDocument } from "./schemas/variations.schema";
+import { Cart, CartDocument } from "src/cart/schemas/cart.schema";
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,8 @@ export class ProductService {
     private productItemModel: Model<ProductItemDocument>,
     @InjectModel(Variation.name)
     private variationModel: Model<VariationDocument>,
+    @InjectModel(Cart.name)
+    private cartModel: Model<CartDocument>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -97,7 +100,9 @@ export class ProductService {
 
   async findAll(): Promise<Product[]> {
     return this.productModel
-      .find()
+      .find({
+        isDeleted: null,
+      })
       .populate({
         path: "items", // ต้องตรงกับ field ที่ถูกอ้างอิง
         model: "ProductItem",
@@ -241,7 +246,20 @@ export class ProductService {
   }
 
   async remove(id: string): Promise<Product> {
-    const product = await this.productModel.findByIdAndDelete(id).exec();
+    const product = await this.productModel
+      .findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            isDeleted: new Date(),
+          },
+        },
+      )
+      .exec();
+    await this.cartModel.updateMany(
+      { "items.product_id": id },
+      { $pull: { items: { product_id: id } } },
+    );
     if (product.product_image) {
       // await this.uploadFileS3Service.deleteImage(product.product_image);
     }
