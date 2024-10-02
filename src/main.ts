@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as passport from "passport";
 import { ValidationPipe } from "@nestjs/common";
+import * as bodyParser from "body-parser";
 
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { corsOptions } from "./utils/corsOptions";
@@ -11,17 +12,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({ ...corsOptions });
   app.use(cookieParser());
-  // TODO: delete lib session
-  // app.use(
-  //   session({
-  //     secret: configService.getOrThrow<string>("auth.sessionSecret"),
-  //     resave: false,
-  //     saveUninitialized: false,
-  //     cookie: { maxAge: 90 * 24 * 60 * 60 * 1000 },
-  //     store: redisStore,
-  //   }),
-  // );
-  // TODO: Seed Admin
+
+  app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
   app.use(passport.initialize());
 
   app.useGlobalPipes(
