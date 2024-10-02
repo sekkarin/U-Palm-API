@@ -1,4 +1,4 @@
-import { NestFactory } from "@nestjs/core";
+import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as passport from "passport";
 import { ValidationPipe } from "@nestjs/common";
@@ -7,10 +7,13 @@ import * as bodyParser from "body-parser";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { corsOptions } from "./utils/corsOptions";
 import * as cookieParser from "cookie-parser";
+import { AllExceptionsFilter } from "./all-exceptionsFilter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({ ...corsOptions });
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.use(cookieParser());
 
   app.use(bodyParser.json({ limit: "50mb" }));
