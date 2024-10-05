@@ -6,8 +6,6 @@ class PageMetaDto {
   readonly hasPreviousPage: boolean;
   readonly hasNextPage: boolean;
   constructor(page: number, limit: number, itemCount: number) {
-    // console.log('class Page meta page',page,typeof page);
-
     this.page = page;
     this.limit = limit;
     this.itemCount = itemCount;
