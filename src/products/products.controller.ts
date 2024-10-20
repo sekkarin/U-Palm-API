@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   BadRequestException,
   UploadedFiles,
+  Query,
 } from "@nestjs/common";
 import { ProductService } from "./products.service";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -17,6 +18,7 @@ import * as multer from "multer";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
 import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service";
+import { ProductPaginationQueryParamsDto } from "./dto/product-pagination";
 
 @Controller("products")
 export class ProductController {
@@ -86,8 +88,10 @@ export class ProductController {
   }
 
   @Get()
-  async findAll() {
-    return this.productService.findAll();
+  async findAll(
+    @Query() productPaginationQueryParamsDto: ProductPaginationQueryParamsDto,
+  ) {
+    return this.productService.findAll(productPaginationQueryParamsDto);
   }
 
   @Get(":id")

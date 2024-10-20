@@ -15,6 +15,8 @@ import {
 } from "./schemas/product-item.schema";
 import { Variation, VariationDocument } from "./schemas/variations.schema";
 import { Cart, CartDocument } from "src/cart/schemas/cart.schema";
+import { ProductPaginationQueryParamsDto } from "./dto/product-pagination";
+import { PaginatedDto } from "src/utils/dto/paginated.dto";
 
 @Injectable()
 export class ProductService {
@@ -98,11 +100,32 @@ export class ProductService {
     console.log("Product", createdProduct);
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.productModel
+  async findAll({
+    limit = 10,
+    page = 1,
+    query = "",
+  }: ProductPaginationQueryParamsDto) {
+    const itemCount = await this.productModel.countDocuments({
+      isDeleted: null,
+    });
+    const productDocument = await this.productModel
       .find({
         isDeleted: null,
+        $or: [
+          {
+            name: {
+              $regex: query,
+              $options: "i",
+            },
+          },
+          {
+            description: { $regex: query, $options: "i" },
+          },
+        ],
       })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .populate({
         path: "items", // ต้องตรงกับ field ที่ถูกอ้างอิง
         model: "ProductItem",
@@ -113,6 +136,7 @@ export class ProductService {
       })
       .populate("category_id supplier_id")
       .exec();
+    return new PaginatedDto<Product>(productDocument, page, limit, itemCount);
   }
 
   async findOne(id: string): Promise<Product> {
