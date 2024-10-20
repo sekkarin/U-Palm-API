@@ -44,7 +44,7 @@ export class SuppliersService {
 
   async findAll({
     page = 1,
-    limit = 1,
+    limit = 10,
     query = "",
   }: SupplierPaginationQueryParamsDto) {
     try {
