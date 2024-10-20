@@ -2,17 +2,19 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateSupplierDto } from "./dto/create-supplier.dto";
 import { UpdateSupplierDto } from "./dto/update-supplier.dto";
 import { InjectModel } from "@nestjs/mongoose";
-import { Supplier } from "./schemas/supplier.schema";
+import { Supplier, SupplierDocument } from "./schemas/supplier.schema";
 import { Model } from "mongoose";
 import { SupplierPaginationQueryParamsDto } from "./dto/sup-pagination-query-params.dto";
 import { PaginatedDto } from "src/utils/dto/paginated.dto";
 import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
 import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service";
+import { Product, ProductDocument } from "src/products/schemas/product.schema";
 
 @Injectable()
 export class SuppliersService {
   constructor(
-    @InjectModel(Supplier.name) private supplierModel: Model<Supplier>,
+    @InjectModel(Supplier.name) private supplierModel: Model<SupplierDocument>,
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     private readonly uploadFileS3Service: ManageFileS3Service,
   ) {}
 
@@ -64,8 +66,30 @@ export class SuppliersService {
 
   async findOne(supplierId: MongoDBObjectIdPipe) {
     try {
-      const supplier = await this.supplierModel.findOne({ _id: supplierId });
-      return supplier || [];
+      const supplier = await this.supplierModel.findOne({
+        _id: supplierId,
+        isDeleted: null,
+      });
+     
+      return supplier
+    } catch (error) {
+      throw error;
+    }
+  }
+  async findOneAndProducts(supplierId: MongoDBObjectIdPipe) {
+    try {
+      const supplier = await this.supplierModel.findOne({
+        _id: supplierId,
+        isDeleted: null,
+      });
+      const products = await this.productModel.find({
+        supplier_id: supplierId,
+        isDeleted: null,
+      });
+      return {
+        supplier,
+        products,
+      };
     } catch (error) {
       throw error;
     }
