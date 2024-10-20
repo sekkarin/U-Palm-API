@@ -87,6 +87,16 @@ export class SuppliersController {
       throw error;
     }
   }
+  @Get(":supplierId/products")
+  findSupplierAndProduct(
+    @Param("supplierId", MongoDBObjectIdPipe) supplierId: MongoDBObjectIdPipe,
+  ) {
+    try {
+      return this.suppliersService.findOneAndProducts(supplierId);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Put(":supplierId")
   @UseInterceptors(

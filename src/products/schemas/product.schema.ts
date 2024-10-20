@@ -68,6 +68,7 @@ ProductSchema.set("toJSON", {
   transform(doc, ret) {
     delete ret["_id"];
     delete ret["updatedAt"];
+    delete ret["isDeleted"];
     delete ret["__v"];
     ret["product_id"] = doc._id;
     return ret;

@@ -4,6 +4,7 @@ import { SuppliersController } from "./suppliers.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Supplier, SupplierSchema } from "./schemas/supplier.schema";
 import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service";
+import { Product, ProductSchema } from "src/products/schemas/product.schema";
 
 @Module({
   controllers: [SuppliersController],
@@ -13,6 +14,12 @@ import { ManageFileS3Service } from "src/utils/services/up-load-file-s3.service"
       {
         name: Supplier.name,
         schema: SupplierSchema,
+      },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: Product.name,
+        schema: ProductSchema,
       },
     ]),
   ],
