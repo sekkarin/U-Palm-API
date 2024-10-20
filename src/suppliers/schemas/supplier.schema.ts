@@ -123,12 +123,18 @@ export class Supplier {
     type: Object,
   })
   contacts_person_2: Contact;
+  @Prop({
+    type: Date,
+    default: null,
+  })
+  isDeleted: Date;
 }
 
 export const SupplierSchema = SchemaFactory.createForClass(Supplier);
 SupplierSchema.set("toJSON", {
   transform(doc, ret) {
     delete ret["_id"];
+    delete ret["isDeleted"];
     delete ret["updatedAt"];
     delete ret["__v"];
     ret["supplier_id"] = doc._id;
