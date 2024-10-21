@@ -70,8 +70,8 @@ export class SuppliersService {
         _id: supplierId,
         isDeleted: null,
       });
-     
-      return supplier
+
+      return supplier;
     } catch (error) {
       throw error;
     }
@@ -82,10 +82,15 @@ export class SuppliersService {
         _id: supplierId,
         isDeleted: null,
       });
-      const products = await this.productModel.find({
-        supplier_id: supplierId,
-        isDeleted: null,
-      });
+      const products = await this.productModel
+        .find({
+          supplier_id: supplierId,
+          isDeleted: null,
+        })
+        .populate({
+          path: "items", // ต้องตรงกับ field ที่ถูกอ้างอิง
+          model: "ProductItem",
+        });
       return {
         supplier,
         products,
