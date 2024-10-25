@@ -7,6 +7,8 @@ import {
   Req,
   UnauthorizedException,
   Res,
+  Param,
+  Body,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { GoogleOAuthGuard } from "./guards/google-oauth.guard";
@@ -18,6 +20,9 @@ import { ValidateUserDto } from "src/user/dto/validate-user.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { Response } from "express";
 import { ConfigService } from "@nestjs/config";
+import { MongoDBObjectIdPipe } from "src/utils/pipes/mongodb-objectid.pipe";
+import { VerifyResetPassword } from "./dto/verify-password.dto";
+import { ResetPasswordDTO } from "./dto/reset-password.dto";
 
 @Controller("auth")
 @ApiTags("Authentication")
@@ -182,6 +187,31 @@ export class AuthController {
       );
 
       res.status(200).json({ access_token });
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post("resetPassword")
+  public async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
+    try {
+      return this.authService.sendEmailResetPassword(resetPasswordDTO.email);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post("verifyResetPassword/:id/:code")
+  public async verifyResetPassword(
+    @Param("id", MongoDBObjectIdPipe) id: string,
+    @Param("code") code: string,
+    @Body() verifyResetPassword: VerifyResetPassword,
+  ) {
+    try {
+      return this.authService.verifyResetPassword(
+        id,
+        code,
+        verifyResetPassword.new_password,
+      );
     } catch (error) {
       throw error;
     }

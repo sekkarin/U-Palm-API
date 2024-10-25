@@ -6,7 +6,6 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import * as sharp from "sharp";
 
 @Injectable()
 export class ManageFileS3Service {
