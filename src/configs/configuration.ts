@@ -33,4 +33,8 @@ export default () => ({
     email: process.env.ADMIN_EMAIL,
     password_hashed: process.env.PASSWORD_HASHED,
   },
+  email: {
+    emailAddress: process.env.EMAIL_ADDRESS,
+    emailAuth: process.env.EMAIL_AUTH_PASSWORD,
+  },
 });

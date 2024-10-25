@@ -11,6 +11,7 @@ import { User, UserSchema } from "src/user/schemas/user.schema";
 import { LocalLoginStrategy } from "./strategy/local-login.strategy";
 import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "src/user/user.module";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
   controllers: [AuthController],
@@ -33,6 +34,7 @@ import { UserModule } from "src/user/user.module";
       global: true,
     }),
     UserModule,
+    CacheModule.register(),
   ],
 })
 export class AuthModule implements NestModule {

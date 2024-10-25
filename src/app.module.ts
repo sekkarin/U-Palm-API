@@ -1,13 +1,15 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { MailerModule } from "@nestjs-modules/mailer";
+import { EjsAdapter } from "@nestjs-modules/mailer/dist/adapters/ejs.adapter";
+import { PassportModule } from "@nestjs/passport";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { UserModule } from "./user/user.module";
 import configuration from "./configs/configuration";
-import { PassportModule } from "@nestjs/passport";
 import { SuppliersModule } from "./suppliers/suppliers.module";
 import { ProductsModule } from "./products/products.module";
 import { ProductController } from "./products/products.controller";
@@ -50,6 +52,31 @@ import { User, UserSchema } from "./user/schemas/user.schema";
         schema: UserSchema,
       },
     ]),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
+          auth: {
+            user: configService.get<string>("email.emailAddress"),
+            pass: configService.get<string>("email.emailAuth"),
+          },
+        },
+        defaults: {
+          from: `"U-Palm-no-reply ${configService.get<string>("email.emailAddress")}"`,
+        },
+        template: {
+          dir: __dirname + "/templates",
+          adapter: new EjsAdapter(),
+          options: {
+            strict: false,
+          },
+        },
+      }),
+    }),
   ],
   controllers: [AppController, ProductController],
   providers: [AppService, ManageFileS3Service],
